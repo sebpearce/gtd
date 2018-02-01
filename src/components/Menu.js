@@ -1,12 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import gs from "../global/globalStyles";
+import global from "../global/global";
 
 const List = styled.ul`
-  ${gs.defaultFont} font-size: 36px;
+  ${global.baseFontFamily};
+  list-style: none;
+  padding: 0;
 `;
 
-const MenuItem = styled.li``;
+const MenuItem = styled.li`
+  margin-bottom: 0.5em;
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
 
 const Menu = ({ items }) => {
   return (
