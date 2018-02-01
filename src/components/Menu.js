@@ -3,7 +3,7 @@ import styled from "styled-components";
 import gs from "../global/globalStyles";
 
 const List = styled.ul`
-  ${gs.defaultFont} ${gs.foo} font-size: 36px;
+  ${gs.defaultFont} font-size: 36px;
 `;
 
 const MenuItem = styled.li``;
