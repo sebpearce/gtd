@@ -9,12 +9,20 @@ const List = styled.ul`
   margin: 0;
   padding: 0;
   color: ${global.colors.text};
-  font-size: 1.1rem;
+  font-size: 1rem;
 `;
 
 const SubList = List.extend`
   padding-left: 1.5em;
   display: ${props => (props.expanded ? "block" : "none")};
+  // opacity: ${props => (props.expanded ? 1 : 0)};
+  // transition: opacity 1s ease;
+  animation: 0.1s foo;
+
+  @keyframes foo {
+    from { transform: translateY(-0.3em); }
+    to { transform: translateY(0); }
+  }
 `;
 
 const MenuItem = styled.li`
@@ -31,7 +39,8 @@ const Label = styled.span`
   cursor: pointer;
   user-select: none;
   &:hover {
-    color: ${global.colors.textHover};
+    // color: ${global.colors.textHover};
+    text-decoration: underline;
   }
 `;
 
@@ -49,7 +58,7 @@ const ChevronRight = styled(ChevronRightIcon)`
     ${props => (props.expanded ? "rotateZ(90deg)" : "rotateZ(0deg)")};
   transition: transform 0.1s ease;
   &:hover {
-    color: ${global.colors.textHover};
+    // color: ${global.colors.textHover};
     cursor: pointer;
   }
 `;
@@ -60,7 +69,9 @@ const MenuItemLabel = ({ item, clickFn }) => {
       onClick={() => {
         clickFn && clickFn();
       }}
-    >{`${item.content} (${item.id})`}</Label>
+    >
+      {item.content}
+    </Label>
   );
 };
 
@@ -72,7 +83,6 @@ class ExpandableItem extends React.Component {
   }
 
   handleExpanderClick(e) {
-    e.preventDefault();
     this.setState({
       expanded: !this.state.expanded
     });
