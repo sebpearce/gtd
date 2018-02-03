@@ -1,47 +1,136 @@
 import React from "react";
 import styled from "styled-components";
-import global from "../global/global";
+import global from "../styles/global";
+import ChevronRightIcon from "./icons/ChevronRightIcon";
 
 const List = styled.ul`
   ${global.baseFontFamily};
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  color: ${global.colors.text};
+  font-size: 1.1rem;
 `;
 
 const SubList = List.extend`
   padding-left: 1.5em;
+  display: ${props => (props.expanded ? "block" : "none")};
 `;
 
 const MenuItem = styled.li`
-  color: ${global.colors.text};
-  // border: 1px solid #aaa;
+  padding-left: 1.5em;
   & {
     margin-top: 0.5em;
   }
+  // ul > ul > & {
+  //   // subitems
+  // }
 `;
 
-const renderItemAndSubItems = item => {
-  return item.items ? (
-    [
-      <MenuItem key={item.id}>{`${item.content} (${item.id})`}</MenuItem>,
-      <SubList key={`${item.id}-subitems`}>
-        {item.items.map(sub => renderItemAndSubItems(sub))}
-      </SubList>
-    ]
-  ) : (
-    <MenuItem key={item.id}>{`${item.content} (${item.id})`}</MenuItem>
+const Label = styled.span`
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: ${global.colors.textHover};
+  }
+`;
+
+const MenuItemWithSubItems = MenuItem.extend`
+  padding-left: 0;
+`;
+
+const ChevronRight = styled(ChevronRightIcon)`
+  fill: currentColor;
+  display: inline-block;
+  width: 1.5em;
+  height: 1em;
+  vertical-align: top;
+  transform: translateY(0.2em)
+    ${props => (props.expanded ? "rotateZ(90deg)" : "rotateZ(0deg)")};
+  transition: transform 0.1s ease;
+  &:hover {
+    color: ${global.colors.textHover};
+    cursor: pointer;
+  }
+`;
+
+const MenuItemLabel = ({ item, clickFn }) => {
+  return (
+    <Label
+      onClick={() => {
+        clickFn && clickFn();
+      }}
+    >{`${item.content} (${item.id})`}</Label>
   );
 };
 
-const Menu = ({ items }) => {
+class ExpandableItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { expanded: false };
+    this.handleExpanderClick = this.handleExpanderClick.bind(this);
+  }
+
+  handleExpanderClick(e) {
+    e.preventDefault();
+    this.setState({
+      expanded: !this.state.expanded
+    });
+    this.props.clickFn && this.props.clickFn();
+  }
+
+  render() {
+    const { item } = this.props;
+
+    return item.children ? (
+      [
+        <MenuItemWithSubItems key={item.id}>
+          <span onClick={this.handleExpanderClick}>
+            <ChevronRight expanded={this.state.expanded} />
+          </span>
+          <MenuItemLabel
+            item={item}
+            clickFn={() => {
+              console.log(`Opening ${item.content}...`);
+            }}
+          />
+        </MenuItemWithSubItems>,
+        <SubList key={`${item.id}-submenu`} expanded={this.state.expanded}>
+          {item.children.map(child => {
+            return <ExpandableItem item={child} />;
+          })}
+        </SubList>
+      ]
+    ) : (
+      <MenuItem key={item.id}>
+        <MenuItemLabel
+          item={item}
+          clickFn={() => {
+            console.log(`Opening ${item.content}...`);
+          }}
+        />
+      </MenuItem>
+    );
+  }
+}
+
+export default function Menu({ items }) {
   return (
     <List>
       {items.map(item => {
-        return renderItemAndSubItems(item);
+        return item.children ? (
+          <ExpandableItem item={item} />
+        ) : (
+          <MenuItem>
+            <MenuItemLabel
+              item={item}
+              clickFn={() => {
+                console.log(`Opening ${item.content}...`);
+              }}
+            />
+          </MenuItem>
+        );
       })}
     </List>
   );
-};
-
-export default Menu;
+}
