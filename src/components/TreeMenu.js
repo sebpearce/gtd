@@ -33,17 +33,18 @@ const SubList = List.extend`
 const MenuItem = styled.li`
   padding-top: 0.3em;
   padding-bottom: 0.3em;
-  padding-left: ${props => props.indentLevel * cssVars.indentSize}em;
+  padding-left: ${props => {
+    if (props.isFlat) return 0.5;
+    return props.indentLevel * cssVars.indentSize;
+  }}em;
   background-color: ${props =>
-    props.selected ? global.colors.menuItemSelected : "transparent"};
+    props.selected ? global.colors.selected : "transparent"};
 
-  font-weight: ${props => (props.selected ? 600 : "normal")};
+  font-weight: ${props => (props.selected ? 700 : "normal")};
 
   &:hover {
     background-color: ${props =>
-      props.selected
-        ? global.colors.menuItemSelected
-        : global.colors.menuItemHover};
+      props.selected ? global.colors.selected : "transparent"};
     cursor: pointer;
   }
   // ul > ul > & {
@@ -59,7 +60,7 @@ const Label = styled.span`
 const MenuItemWithSubItems = MenuItem.extend`
   padding-left: ${props => props.indentLevel * cssVars.indentSize}em;
   background-color: ${props =>
-    props.selected ? global.colors.menuItemSelected : "transparent"};
+    props.selected ? global.colors.selected : "transparent"};
 `;
 
 const ChevronRight = styled(ChevronRightIcon)`
@@ -89,6 +90,11 @@ const ChevronRightWrapper = styled.span`
     background: #fff;
     cursor: pointer;
   }
+`;
+
+const Heading = styled.h3`
+  ${global.mixins.smallHeadingFont};
+  padding-left: 0.5em;
 `;
 
 const Expander = props => {
@@ -182,8 +188,13 @@ export default class TreeMenu extends React.Component {
     });
   }
 
-  render() {
-    const { items } = this.props;
+  renderList(items) {
+    // TODO: this means we're mapping twice. Smelly.
+    const isFlat = items.reduce(
+      (acc, item) => acc && item.children === undefined,
+      true
+    );
+
     return (
       <List>
         {items.map(item => {
@@ -202,6 +213,7 @@ export default class TreeMenu extends React.Component {
               onClick={() => {
                 this.selectItem(item);
               }}
+              isFlat={isFlat}
             >
               <Label>{item.content}</Label>
             </MenuItem>
@@ -209,5 +221,13 @@ export default class TreeMenu extends React.Component {
         })}
       </List>
     );
+  }
+
+  render() {
+    const { items, heading } = this.props;
+
+    return heading
+      ? [<Heading>{heading}</Heading>, this.renderList(items)]
+      : this.renderList(items);
   }
 }

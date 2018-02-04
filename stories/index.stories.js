@@ -49,8 +49,19 @@ const menuItems = [
   { id: 6, content: "Golf" }
 ];
 
-storiesOf("TreeMenu", module).add("Default", () => (
-  <TreeMenu items={menuItems} />
-));
+const flatItems = [
+  { id: 0, content: "all" },
+  { id: 1, content: "@november" },
+  { id: 2, content: "@oscar" },
+  { id: 3, content: "@papa" },
+  { id: 4, content: "@quebec" },
+  { id: 5, content: "@romeo" },
+  { id: 6, content: "@sierra" }
+];
+
+storiesOf("TreeMenu", module)
+  .add("Default", () => <TreeMenu items={menuItems} />)
+  .add("Flat structure", () => <TreeMenu items={flatItems} />)
+  .add("With heading", () => <TreeMenu items={flatItems} heading="Uniform" />);
 
 storiesOf("Nav", module).add("Default", () => <Nav />);
