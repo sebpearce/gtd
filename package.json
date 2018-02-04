@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "react": "^16.2.0",
@@ -13,12 +14,12 @@
     "styled-components": "^3.1.5"
   },
   "devDependencies": {
-    "prettier": "1.10.2",
-    "@storybook/react": "^3.3.11",
     "@storybook/addon-actions": "^3.3.11",
     "@storybook/addon-links": "^3.3.11",
     "@storybook/addons": "^3.3.11",
-    "babel-core": "^6.26.0"
+    "@storybook/react": "^3.3.11",
+    "babel-core": "^6.26.0",
+    "prettier": "1.10.2"
   },
   "scripts": {
     "storybook": "start-storybook -p 6006",

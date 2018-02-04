@@ -10,6 +10,7 @@ const List = styled.ul`
   padding: 0;
   color: ${global.colors.text};
   font-size: 1rem;
+  max-width: 300px;
 `;
 
 const SubList = List.extend`
@@ -26,10 +27,13 @@ const SubList = List.extend`
 `;
 
 const MenuItem = styled.li`
-  padding-left: 1.5em;
-  & {
-    margin-top: 0.5em;
-  }
+  padding: 0.3em 0 0.3em 1.5em;
+
+  background-color: ${props =>
+    props.selected ? global.colors.menuItemSelected : "transparent"};
+
+  font-weight: ${props => (props.selected ? 600 : "normal")};
+
   // ul > ul > & {
   //   // subitems
   // }
@@ -46,6 +50,8 @@ const Label = styled.span`
 
 const MenuItemWithSubItems = MenuItem.extend`
   padding-left: 0;
+  background-color: ${props =>
+    props.selected ? global.colors.menuItemSelected : "transparent"};
 `;
 
 const ChevronRight = styled(ChevronRightIcon)`
@@ -78,7 +84,9 @@ const MenuItemLabel = ({ item, clickFn }) => {
 class ExpandableItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { expanded: false };
+    this.state = {
+      expanded: false
+    };
     this.handleExpanderClick = this.handleExpanderClick.bind(this);
   }
 
@@ -94,29 +102,38 @@ class ExpandableItem extends React.Component {
 
     return item.children ? (
       [
-        <MenuItemWithSubItems key={item.id}>
+        <MenuItemWithSubItems
+          key={item.id}
+          selected={this.props.selection === item.id}
+        >
           <span onClick={this.handleExpanderClick}>
             <ChevronRight expanded={this.state.expanded} />
           </span>
           <MenuItemLabel
             item={item}
             clickFn={() => {
-              console.log(`Opening ${item.content}...`);
+              this.props.selectItem(item);
             }}
           />
         </MenuItemWithSubItems>,
         <SubList key={`${item.id}-submenu`} expanded={this.state.expanded}>
           {item.children.map(child => {
-            return <ExpandableItem item={child} />;
+            return (
+              <ExpandableItem
+                item={child}
+                selection={this.props.selection}
+                selectItem={this.props.selectItem}
+              />
+            );
           })}
         </SubList>
       ]
     ) : (
-      <MenuItem key={item.id}>
+      <MenuItem key={item.id} selected={this.props.selection === item.id}>
         <MenuItemLabel
           item={item}
           clickFn={() => {
-            console.log(`Opening ${item.content}...`);
+            this.props.selectItem(item);
           }}
         />
       </MenuItem>
@@ -124,23 +141,46 @@ class ExpandableItem extends React.Component {
   }
 }
 
-export default function TreeMenu({ items }) {
-  return (
-    <List>
-      {items.map(item => {
-        return item.children ? (
-          <ExpandableItem item={item} />
-        ) : (
-          <MenuItem>
-            <MenuItemLabel
+export default class TreeMenu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selection: null
+    };
+
+    this.selectItem = this.selectItem.bind(this);
+  }
+
+  selectItem(item) {
+    this.setState({
+      ...this.state,
+      selection: item.id
+    });
+  }
+
+  render() {
+    const { items } = this.props;
+    return (
+      <List>
+        {items.map(item => {
+          return item.children ? (
+            <ExpandableItem
               item={item}
-              clickFn={() => {
-                console.log(`Opening ${item.content}...`);
-              }}
+              selection={this.state.selection}
+              selectItem={this.selectItem}
             />
-          </MenuItem>
-        );
-      })}
-    </List>
-  );
+          ) : (
+            <MenuItem selected={this.state.selection === item.id}>
+              <MenuItemLabel
+                item={item}
+                clickFn={() => {
+                  this.selectItem(item);
+                }}
+              />
+            </MenuItem>
+          );
+        })}
+      </List>
+    );
+  }
 }
