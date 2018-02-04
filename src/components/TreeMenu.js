@@ -3,9 +3,9 @@ import styled from "styled-components";
 import global from "../styles/global";
 import ChevronRightIcon from "./icons/ChevronRightIcon";
 
-// TODO: make chevron absolute positioned and bigger;
-//       make entire li clickable and hoverable
-//       (chevron will override it at higher z-index)
+const cssVars = {
+  indentSize: 1.9
+};
 
 const List = styled.ul`
   font-family: ${global.baseFontFamily};
@@ -14,7 +14,7 @@ const List = styled.ul`
   padding: 0;
   color: ${global.colors.text};
   font-size: 1rem;
-  max-width: 250px;
+  max-width: 315px;
 `;
 
 const SubList = List.extend`
@@ -22,9 +22,9 @@ const SubList = List.extend`
   display: ${props => (props.expanded ? "block" : "none")};
   // opacity: ${props => (props.expanded ? 1 : 0)};
   // transition: opacity 1s ease;
-  animation: 0.1s foo;
+  animation: 0.1s expandNode;
 
-  @keyframes foo {
+  @keyframes expandNode {
     from { transform: translateX(-0.3em); }
     to { transform: translateX(0); }
   }
@@ -33,57 +33,68 @@ const SubList = List.extend`
 const MenuItem = styled.li`
   padding-top: 0.3em;
   padding-bottom: 0.3em;
-  padding-left: ${props => props.indentLevel * 1.5}em;
-
+  padding-left: ${props => props.indentLevel * cssVars.indentSize}em;
   background-color: ${props =>
     props.selected ? global.colors.menuItemSelected : "transparent"};
 
   font-weight: ${props => (props.selected ? 600 : "normal")};
 
+  &:hover {
+    background-color: ${props =>
+      props.selected
+        ? global.colors.menuItemSelected
+        : global.colors.menuItemHover};
+    cursor: pointer;
+  }
   // ul > ul > & {
   //   // subitems
   // }
 `;
 
 const Label = styled.span`
-  cursor: pointer;
+  position: relative;
   user-select: none;
-  // &:hover {
-  //   color: ${global.colors.textHover};
-  //   text-decoration: underline;
-  // }
 `;
 
 const MenuItemWithSubItems = MenuItem.extend`
-  padding-left: ${props => props.indentLevel * 1.5 - 1.5}em;
+  padding-left: ${props => props.indentLevel * cssVars.indentSize}em;
   background-color: ${props =>
     props.selected ? global.colors.menuItemSelected : "transparent"};
 `;
 
 const ChevronRight = styled(ChevronRightIcon)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
   fill: currentColor;
-  display: inline-block;
-  width: 1.5em;
+  width: 1em;
   height: 1em;
-  vertical-align: top;
-  transform: translateY(0.2em)
+  background-color: transparent;
+  transform: translateX(-0.5em) translateY(-0.5em)
     ${props => (props.expanded ? "rotateZ(90deg)" : "rotateZ(0deg)")};
   transition: transform 0.1s ease;
+`;
+
+const ChevronRightWrapper = styled.span`
+  position: absolute;
+  top: 0.1em;
+  left: -1.5em;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: #fff;
   &:hover {
-    // color: ${global.colors.textHover};
+    border-color: ${global.colors.hoverOutlineBorder};
     cursor: pointer;
   }
 `;
 
-const MenuItemLabel = ({ item, clickFn }) => {
+const Expander = props => {
   return (
-    <Label
-      onClick={() => {
-        clickFn && clickFn();
-      }}
-    >
-      {item.content}
-    </Label>
+    <ChevronRightWrapper onClick={props.handleExpanderClick}>
+      <ChevronRight expanded={props.expanded} />
+    </ChevronRightWrapper>
   );
 };
 
@@ -97,10 +108,10 @@ class ExpandableItem extends React.Component {
   }
 
   handleExpanderClick(e) {
+    e.stopPropagation();
     this.setState({
       expanded: !this.state.expanded
     });
-    this.props.clickFn && this.props.clickFn();
   }
 
   render() {
@@ -112,16 +123,17 @@ class ExpandableItem extends React.Component {
           key={item.id}
           selected={this.props.selection === item.id}
           indentLevel={this.props.indentLevel}
+          onClick={() => {
+            this.props.selectItem(item);
+          }}
         >
-          <span onClick={this.handleExpanderClick}>
-            <ChevronRight expanded={this.state.expanded} />
-          </span>
-          <MenuItemLabel
-            item={item}
-            clickFn={() => {
-              this.props.selectItem(item);
-            }}
-          />
+          <Label>
+            <Expander
+              handleExpanderClick={this.handleExpanderClick}
+              expanded={this.state.expanded}
+            />
+            {item.content}
+          </Label>
         </MenuItemWithSubItems>,
         <SubList key={`${item.id}-submenu`} expanded={this.state.expanded}>
           {item.children.map(child => {
@@ -141,13 +153,11 @@ class ExpandableItem extends React.Component {
         key={item.id}
         selected={this.props.selection === item.id}
         indentLevel={this.props.indentLevel}
+        onClick={() => {
+          this.props.selectItem(item);
+        }}
       >
-        <MenuItemLabel
-          item={item}
-          clickFn={() => {
-            this.props.selectItem(item);
-          }}
-        />
+        <Label>{item.content}</Label>
       </MenuItem>
     );
   }
@@ -186,13 +196,11 @@ export default class TreeMenu extends React.Component {
             <MenuItem
               selected={this.state.selection === item.id}
               indentLevel={1}
+              onClick={() => {
+                this.selectItem(item);
+              }}
             >
-              <MenuItemLabel
-                item={item}
-                clickFn={() => {
-                  this.selectItem(item);
-                }}
-              />
+              <Label>{item.content}</Label>
             </MenuItem>
           );
         })}

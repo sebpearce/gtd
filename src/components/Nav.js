@@ -20,7 +20,7 @@ const NavList = styled.ul`
 
 const NavItem = styled.li`
   font-weight: 600;
-  padding: 0.2em;
+  padding: 0.35em;
   margin: 0;
   background-color: ${props =>
     props.selected ? global.colors.menuItemSelected : "transparent"};
@@ -35,7 +35,7 @@ const NavItem = styled.li`
 `;
 
 const Label = styled.span`
-  padding-left: 0.5em;
+  padding-left: 0.7em;
 `;
 
 const Icon = styled.span`
