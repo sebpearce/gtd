@@ -3,7 +3,7 @@ export default {
   colors: {
     text: "#333",
     textHover: "#777",
-    menuItemSelected: "#eee",
-    menuItemHover: "hsl(0,0%,96%)"
+    menuItemSelected: "hsl(208,70%,96%)",
+    menuItemHover: "hsl(100,50%,96%)"
   }
 };

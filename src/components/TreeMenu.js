@@ -3,6 +3,10 @@ import styled from "styled-components";
 import global from "../styles/global";
 import ChevronRightIcon from "./icons/ChevronRightIcon";
 
+// TODO: make chevron absolute positioned and bigger;
+//       make entire li clickable and hoverable
+//       (chevron will override it at higher z-index)
+
 const List = styled.ul`
   font-family: ${global.baseFontFamily};
   list-style: none;
@@ -10,11 +14,11 @@ const List = styled.ul`
   padding: 0;
   color: ${global.colors.text};
   font-size: 1rem;
-  max-width: 300px;
+  max-width: 250px;
 `;
 
 const SubList = List.extend`
-  padding-left: 1.5em;
+  padding-left: 0;
   display: ${props => (props.expanded ? "block" : "none")};
   // opacity: ${props => (props.expanded ? 1 : 0)};
   // transition: opacity 1s ease;
@@ -27,7 +31,9 @@ const SubList = List.extend`
 `;
 
 const MenuItem = styled.li`
-  padding: 0.3em 0 0.3em 1.5em;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: ${props => props.indentLevel * 1.5}em;
 
   background-color: ${props =>
     props.selected ? global.colors.menuItemSelected : "transparent"};
@@ -49,7 +55,7 @@ const Label = styled.span`
 `;
 
 const MenuItemWithSubItems = MenuItem.extend`
-  padding-left: 0;
+  padding-left: ${props => props.indentLevel * 1.5 - 1.5}em;
   background-color: ${props =>
     props.selected ? global.colors.menuItemSelected : "transparent"};
 `;
@@ -105,6 +111,7 @@ class ExpandableItem extends React.Component {
         <MenuItemWithSubItems
           key={item.id}
           selected={this.props.selection === item.id}
+          indentLevel={this.props.indentLevel}
         >
           <span onClick={this.handleExpanderClick}>
             <ChevronRight expanded={this.state.expanded} />
@@ -123,13 +130,18 @@ class ExpandableItem extends React.Component {
                 item={child}
                 selection={this.props.selection}
                 selectItem={this.props.selectItem}
+                indentLevel={this.props.indentLevel + 1}
               />
             );
           })}
         </SubList>
       ]
     ) : (
-      <MenuItem key={item.id} selected={this.props.selection === item.id}>
+      <MenuItem
+        key={item.id}
+        selected={this.props.selection === item.id}
+        indentLevel={this.props.indentLevel}
+      >
         <MenuItemLabel
           item={item}
           clickFn={() => {
@@ -168,9 +180,13 @@ export default class TreeMenu extends React.Component {
               item={item}
               selection={this.state.selection}
               selectItem={this.selectItem}
+              indentLevel={1}
             />
           ) : (
-            <MenuItem selected={this.state.selection === item.id}>
+            <MenuItem
+              selected={this.state.selection === item.id}
+              indentLevel={1}
+            >
               <MenuItemLabel
                 item={item}
                 clickFn={() => {
