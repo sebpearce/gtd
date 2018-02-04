@@ -5,6 +5,6 @@ export default {
     textHover: "#777",
     menuItemSelected: "hsl(208,0%,97%)",
     menuItemHover: "transparent",
-    hoverOutlineBorder: "#ddd"
+    hoverOutlineBorder: "#999"
   }
 };

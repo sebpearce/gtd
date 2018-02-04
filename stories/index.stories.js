@@ -20,7 +20,8 @@ const menuItems = [
   {
     id: 1,
     content: "Bravo",
-    children: [{ id: 12, content: "Zulu" }, { id: 13, content: "Yankee" }]
+    children: [{ id: 12, content: "Zulu" }, { id: 13, content: "Yankee" }],
+    expanded: true
   },
   { id: 2, content: "Charlie" },
   { id: 3, content: "Delta" },
@@ -38,7 +39,8 @@ const menuItems = [
           {
             id: 194,
             content: "Kilo",
-            children: [{ id: 1982, content: "Lima" }]
+            children: [{ id: 1982, content: "Lima" }],
+            expanded: true
           }
         ]
       }

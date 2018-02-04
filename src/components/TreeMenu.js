@@ -77,15 +77,16 @@ const ChevronRight = styled(ChevronRightIcon)`
 
 const ChevronRightWrapper = styled.span`
   position: absolute;
-  top: 0.1em;
+  top: 0.05em;
   left: -1.5em;
   width: 1.1em;
   height: 1.1em;
   border-radius: 50%;
   border: 1px solid transparent;
-  background: #fff;
+  background: transparent;
   &:hover {
     border-color: ${global.colors.hoverOutlineBorder};
+    background: #fff;
     cursor: pointer;
   }
 `;
@@ -102,7 +103,7 @@ class ExpandableItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: this.props.expanded || false
     };
     this.handleExpanderClick = this.handleExpanderClick.bind(this);
   }
@@ -143,6 +144,7 @@ class ExpandableItem extends React.Component {
                 selection={this.props.selection}
                 selectItem={this.props.selectItem}
                 indentLevel={this.props.indentLevel + 1}
+                expanded={child.expanded}
               />
             );
           })}
@@ -191,6 +193,7 @@ export default class TreeMenu extends React.Component {
               selection={this.state.selection}
               selectItem={this.selectItem}
               indentLevel={1}
+              expanded={item.expanded}
             />
           ) : (
             <MenuItem
