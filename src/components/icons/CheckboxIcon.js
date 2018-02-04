@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function ChevronRightIcon(props) {
+export default function CheckboxIcon(props) {
   return (
     <svg
       className={props.className}
@@ -11,7 +11,7 @@ export default function ChevronRightIcon(props) {
       width="24"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
       <path d="M0 0h24v24H0z" fill="none" />
     </svg>
   );

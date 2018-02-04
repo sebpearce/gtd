@@ -4,7 +4,7 @@ import global from "../styles/global";
 import ChevronRightIcon from "./icons/ChevronRightIcon";
 
 const List = styled.ul`
-  ${global.baseFontFamily};
+  font-family: ${global.baseFontFamily};
   list-style: none;
   margin: 0;
   padding: 0;
@@ -20,8 +20,8 @@ const SubList = List.extend`
   animation: 0.1s foo;
 
   @keyframes foo {
-    from { transform: translateY(-0.3em); }
-    to { transform: translateY(0); }
+    from { transform: translateX(-0.3em); }
+    to { transform: translateX(0); }
   }
 `;
 
@@ -38,10 +38,10 @@ const MenuItem = styled.li`
 const Label = styled.span`
   cursor: pointer;
   user-select: none;
-  &:hover {
-    // color: ${global.colors.textHover};
-    text-decoration: underline;
-  }
+  // &:hover {
+  //   color: ${global.colors.textHover};
+  //   text-decoration: underline;
+  // }
 `;
 
 const MenuItemWithSubItems = MenuItem.extend`
@@ -124,7 +124,7 @@ class ExpandableItem extends React.Component {
   }
 }
 
-export default function Menu({ items }) {
+export default function TreeMenu({ items }) {
   return (
     <List>
       {items.map(item => {

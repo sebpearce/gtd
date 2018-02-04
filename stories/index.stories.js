@@ -6,7 +6,8 @@ import { linkTo } from "@storybook/addon-links";
 
 import { Welcome } from "@storybook/react/demo";
 
-import Menu from "../src/components/Menu";
+import TreeMenu from "../src/components/TreeMenu";
+import Nav from "../src/components/Nav";
 
 // document.documentElement.style.fontSize = "10px";
 
@@ -46,4 +47,8 @@ const menuItems = [
   { id: 6, content: "Golf" }
 ];
 
-storiesOf("Menu", module).add("Default", () => <Menu items={menuItems} />);
+storiesOf("TreeMenu", module).add("Default", () => (
+  <TreeMenu items={menuItems} />
+));
+
+storiesOf("Nav", module).add("Default", () => <Nav />);

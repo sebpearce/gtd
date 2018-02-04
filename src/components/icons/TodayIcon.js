@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function ChevronRightIcon(props) {
+export default function TodayIcon(props) {
   return (
     <svg
       className={props.className}
@@ -11,8 +11,8 @@ export default function ChevronRightIcon(props) {
       width="24"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
       <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
     </svg>
   );
 }
